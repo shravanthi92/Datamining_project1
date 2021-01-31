@@ -1,0 +1,474 @@
+#Loading of Dataset 
+ionosphere=read.table("C:/Users/santh/Desktop/DM Project/ionosphere.data",header=T,sep=',',stringsAsFactors = TRUE,na.strings ="?")
+attach(ionosphere)
+class=ifelse((g)=='g', "no","yes")
+ionosphere=data.frame(ionosphere,class)
+ionosphere=ionosphere[,-35]
+fix(ionosphere)
+library(tree)
+library(randomForest)
+dim(ionosphere)
+
+#Holdout method with 75% of dataset (265 entries)
+set.seed(123)
+train=sample(1:nrow(ionosphere), 265)
+trainset=ionosphere[train,]
+testset=ionosphere[-train,]
+class.train=class[train]
+class.test=class[-train]
+tree.ionosphere=tree(class~.,ionosphere,subset=train)
+summary(tree.ionosphere)
+plot(tree.ionosphere)
+text(tree.ionosphere,pretty=0)
+#Training_Accuracy
+tree.pred=predict(tree.ionosphere,trainset,type="class")
+table(tree.pred,class.train)
+training_accuracy=mean(tree.pred==class.train)*100
+training_accuracy
+training_error=mean(tree.pred!=class.train)*100
+training_error
+#Testing_Accuracy
+tree.pred=predict(tree.ionosphere,testset,type="class")
+table(tree.pred,class.test)
+testing_accuracy=mean(tree.pred==class.test)*100
+testing_accuracy
+testing_error=mean(tree.pred!=class.test)*100
+testing_error
+#Barplot
+barplot(c(training_accuracy,training_error,testing_accuracy,testing_error),
+ylim = c(0,100),main = "Decision Tree - Holdout Method ",
+ylab ="Percentages",col=c("blue","red"),
+names.arg =c("Training Accuracy","Training Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+
+#Bagging
+#Loading the Dataset
+rm(list=ls())
+library(tree)
+library(randomForest)
+ionosphere=read.table("C:/Users/santh/Desktop/DM Project/ionosphere.data",header=T,sep=',',stringsAsFactors = TRUE,na.strings ="?")
+fix(ionosphere)
+str(ionosphere)
+#there are no null values 
+attach(ionosphere)
+class=ifelse((g)=='g', "no","yes")
+ionosphere=data.frame(ionosphere,class)
+ionosphere=ionosphere[,-35]
+fix(ionosphere)
+library(tree)
+library(randomForest)
+dim(ionosphere)
+
+#Bagging with 75% data
+set.seed(123)
+trainsample=sample(1:nrow(ionosphere),250)
+trainset=ionosphere[trainsample,]
+testset=ionosphere[-trainsample,]
+class.train=class[trainsample]
+class.test=class[-trainsample]
+tree.ionosphere=tree(class~.,ionosphere,subset=trainsample)
+summary(tree.ionosphere)
+tree.ionosphere=randomForest(class~.,ionosphere,subset=trainsample, ntree=200,mtry=4)
+#Training_Accuracy
+tree.pred=predict(tree.ionosphere,trainset,type="class")
+table(tree.pred,class.train)
+Training_Accuracy=mean(tree.pred==class.train)*100
+Training_Accuracy
+Training_Error=mean(tree.pred!=class.train)*100
+Training_Error
+#Testing_Accuracy
+tree.pred=predict(tree.ionosphere,testset,type="class")
+table(tree.pred,class.test)
+Testing_Accuracy=mean(tree.pred==class.test)*100
+Testing_Accuracy
+Testing_Error=mean(tree.pred!=class.test)*100
+Testing_Error
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Bagging Method-ntree=200, mtry=4",
+ylab ="Percentages",col=c("Blue","Red"),
+names.arg =c("Training Accuracy","Training Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+#ntree=250,mtry=9
+tree.ionosphere=randomForest(class~.,ionosphere,subset=trainsample,ntree=250,mtry=9)
+#Training_Accuracy
+tree.pred=predict(tree.ionosphere,trainset,type="class")
+table(tree.pred,class.train)
+Training_Accuracy=mean(tree.pred==class.train)*100
+Training_Accuracy
+Training_Error=mean(tree.pred!=class.train)*100
+Training_Error
+
+#Testing_Accuracy
+tree.pred=predict(tree.ionosphere,testset,type="class")
+table(tree.pred,class.test)
+Testing_Accuracy=mean(tree.pred==class.test)*100
+Testing_Accuracy
+Testing_Error=mean(tree.pred!=class.test)*100
+Testing_Error
+#BarPlot
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Bagging Method-ntree=250, mtry=9",
+ylab ="Percentages",col=c("Blue","Red"),
+names.arg =c("Training Accuracy","Training Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+
+#ntree=500,mtry=20
+tree.ionosphere=randomForest(class~.,ionosphere,subset=trainsample,ntree=500,mtry=20)
+#Training_Accuracy
+tree.pred=predict(tree.ionosphere,trainset,type="class")
+table(tree.pred,class.train)
+Training_Accuracy=mean(tree.pred==class.train)*100
+Training_Accuracy
+Training_Error=mean(tree.pred!=class.train)*100
+Training_Error
+#Testing_Accuracy
+tree.pred=predict(tree.ionosphere,testset,type="class")
+table(tree.pred,class.test)
+Testing_Accuracy=mean(tree.pred==class.test)*100
+Testing_Accuracy
+Testing_Error=mean(tree.pred!=class.test)*100
+Testing_Error
+#BarPlot
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Bagging Method-ntree=500, mtry=20",
+ylab ="Percentages",col=c("Blue","Red"),
+names.arg =c("Training Accuracy","Training Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+
+#Random Forest
+rm(list=ls())
+ionosphere=read.table("C:/Users/santh/Desktop/DM Project/ionosphere.data",header=T,sep=',',stringsAsFactors = TRUE,na.strings ="?")
+attach(ionosphere)
+class=ifelse((g)=='g', "no","yes")
+ionosphere=data.frame(ionosphere,class)
+ionosphere=ionosphere[,-35]
+fix(ionosphere)
+library(tree)
+library(randomForest)
+dim(ionosphere)
+set.seed(123)
+trainsample=sample(1:nrow(ionosphere),265)
+trainset=ionosphere[trainsample,]
+testset=ionosphere[-trainsample,]
+class.train=class[trainsample]
+class.test=class[-trainsample]
+tree.ion=tree(class~.,ionosphere,subset=trainsample)
+summary(tree.ion)
+#ntree=200, mtry=4
+tree.ion=randomForest(class~.,ionosphere,subset=trainsample,ntree=200,mtry=4)
+#Training_Accuracy
+tree.pred=predict(tree.ion,trainset,type="class")
+table(tree.pred,class.train)
+Training_Accuracy=mean(tree.pred==class.train)*100
+Training_Accuracy
+Training_Error=mean(tree.pred!=class.train)*100
+Training_Error
+tree.pred=predict(tree.ion,testset,type="class")
+table(tree.pred,class.test)
+Testing_Accuracy=mean(tree.pred==class.test)*100
+Testing_Accuracy
+Testing_Error=mean(tree.pred!=class.test)*100
+Testing_Error
+#Barplot
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Random Forest Method-ntree=200-mtry=4",
+ylab ="Percentages",col=c("blue","red"),
+names.arg =c("Training_Accuracy","Training_Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+#ntree=500, mtry=3
+
+tree.ion=randomForest(class~.,ionosphere,subset=trainsample,ntree=500,mtry=3)
+#Training_Accuracy
+tree.pred=predict(tree.ionosphere,trainset,type="class")
+table(tree.pred,class.train)
+Training_Accuracy=mean(tree.pred==class.train)*100
+Training_Accuracy
+Training_Error=mean(tree.pred!=class.train)*100
+Training_Error
+#Testing_Accuracy
+tree.pred=predict(tree.ion,testset,type="class")
+table(tree.pred,class.test)
+Testing_Accuracy=mean(tree.pred==class.test)*100
+Testing_Accuracy
+Testing_Error=mean(tree.pred!=class.test)*100
+Testing_Error
+#Barplot
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Random Forest Method-ntree=500-mtry=3",
+ylab ="Percentages",col=c("blue","red"),
+names.arg =c("Training_Accuracy","Training_Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+
+#ntree=600, mtry=6
+tree.ion=randomForest(class~.,ionosphere,subset=trainsample,ntree=600,mtry=6)
+#Training_Accuracy
+tree.pred=predict(tree.ionosphere,trainset,type="class")
+table(tree.pred,class.train)
+Training_Accuracy=mean(tree.pred==class.train)*100
+Training_Accuracy
+Training_Error=mean(tree.pred!=class.train)*100
+Training_Error
+#Testing_Accuracy
+tree.pred=predict(tree.ion,testset,type="class")
+table(tree.pred,class.test)
+Testing_Accuracy=mean(tree.pred==class.test)*100
+Testing_Accuracy
+Testing_Error=mean(tree.pred!=class.test)*100
+Testing_Error
+#Barplot
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Random Forest Method-ntree=600-mtry=6",
+ylab ="Percentages",col=c("blue","red"),
+names.arg =c("Training_Accuracy","Training_Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+
+#Boosting
+rm(list=ls())
+library(tree)
+library(randomForest)
+library(gbm)
+ionosphere=read.table("C:/Users/santh/Desktop/DM Project/ionosphere.data",header=T,sep=',',stringsAsFactors = TRUE,na.strings ="?")
+fix(ionosphere)
+str(ionosphere)
+#there are no null values 
+attach(ionosphere)
+ionosphere$g=ifelse(ionosphere$g=='b', "0","1")
+ionosphere=ionosphere[,-5]
+ionosphere=data.frame(ionosphere)
+str(ionosphere)
+trainsample=sample(1:nrow(ionosphere),260)
+trainset=ionosphere[trainsample,]
+testset=ionosphere[-trainsample,]
+classts.test=ionosphere$g[-trainsample]
+classtr.train=ionosphere$g[trainsample]
+fix(classts.test)
+#Training_Accuracy
+tree.boosting= gbm(g~.,data=trainset,distribution = "bernoulli",n.trees = 260)
+tree.boosting.pred=predict(tree.boosting,newdata = trainset,n.trees = 260,type="response")
+tree.boosting.pred=ifelse(tree.boosting.pred>=0.5,"0","1")
+classtr.train =ifelse(classtr.train==0,"0","1")
+table(tree.boosting.pred,classtr.train)
+Training_Accuracy=mean(tree.boosting.pred!=classtr.train)*100
+Training_Accuracy
+Training_Error=100-Training_Accuracy
+Training_Error
+#Testing_Accuracy
+tree.ion=gbm(g~.,trainset, distribution="bernoulli",n.trees=260,interaction.depth=2)
+tree.pred.prob=predict(tree.ion, testset, n.trees=260, type="response", interaction.depth=2)
+tree.pred=ifelse(tree.pred.prob>0.5, "1", "0")
+table(classts.test, tree.pred)
+Testing_Accuracy=mean(tree.pred==classts.test)*100
+Testing_Accuracy
+Testing_Error=100-Testing_Accuracy
+Testing_Error
+#Barplot
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Boosting Method",
+ylab ="Percentages",col=c("blue","red"),
+names.arg =c("Training_Accuracy","Training_Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+
+#Naive_Bayes_Model
+rm(list=ls())
+set.seed(123)
+ion=read.table('C:/Users/santh/Desktop/DM Project/ionosphere.data',sep=',')
+fix(ion)
+trainsample=sample(1:nrow(ion),265)
+trainset=ion[trainsample,]
+testset=ion[-trainsample,]
+fix(trainset)
+fix(testset)
+library(e1071)
+Naive_Bayes_Model=naiveBayes(V35~., data=trainset) 
+summary(Naive_Bayes_Model)
+# Training_Accuracy
+tr.pred = predict(Naive_Bayes_Model,trainset)
+tr.table = table(tr.pred,Truth = trainset$V35)
+tr.table
+Training_Accuracy=mean(tr.pred== trainset$V35)*100
+Training_Accuracy 
+Training_Error=mean(tr.pred!= trainset$V35)*100
+Training_Error            
+ 
+#Test_Accuracy
+ts.pred = predict(Naive_Bayes_Model,testset)
+ts.table = table(ts.pred,Truth = testset$V35)
+ts.table
+Testing_Accuracy=mean(ts.pred== testset$V35)*100 
+Testing_Error=mean(ts.pred!= testset$V35)*100
+Testing_Accuracy
+Testing_Error
+
+#Barplot
+barplot(c(Training_Accuracy,Training_Error,Testing_Accuracy,Testing_Error),
+ylim = c(0,100),main = "Naive Bayes classification method ",
+ylab ="Percentages",col=c("Blue","red"),
+names.arg =c("Training Accuracy","Training Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+
+#Support Vector Machine
+ion = read.table("C://Users/gouth/Desktop/ionosphere.data", header = F,sep=',', na.strings='?')
+ions=na.omit(ion)
+fix(ions)
+attach(ions)
+dim(ions)
+str(ions)
+attributes(ions)
+str(ions)
+colnames(ions)=c("V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14","V15","V16","V17","V18",
+"V19","V20","V21","V22","V23","V24","V25","V26","V27","V28","V29","V30","V31","V32","V33","V34","V35")
+str(ions)
+library(tree)
+install.packages(tree)
+library(tree)
+library(e1071)
+##SPLITTING DATASET INTO TRAINING AND TESTING (80% TRAINING AND 20% TESTING)
+RNGkind(sample.kind="Rounding")
+set.seed(123)
+train=sample(1:nrow(ions),260)
+ionosphere_train=ions[train,]
+ionosphere_test=ions[-train,]
+###SVM LINEAR FIT##
+RNGkind(sample.kind="Rounding")
+set.seed(123)
+tune.linearout=tune(svm, V35~.,data=ionosphere_train,kernel="linear", ranges=list(cost=c(0.01,0.01,0.1,1,10,100)))
+summary(tune.linearout)
+bestmodel_linear=tune.linearout$best.model
+summary(bestmodel_linear)
+svm_linearfit=svm(V35~.,data=ionosphere_train,kernel="linear", cost=0.001)
+summary(svm_linearfit)
+##training data
+svm_trainpredict=predict(bestmodel_linear,ionosphere_train)
+table(svm_trainpredict,ionosphere_train$V35)
+training_accuracy=mean(svm_trainpredict==ionosphere_train$V35)*100
+training_accuracy
+training_error=100-training_accuracy
+training_error
+##testing data
+svm_testpredict=predict(bestmodel_linear,ionosphere_test)
+table(svm_testpredict,ionosphere_test$V35)
+testing_accuracy=mean(svm_testpredict==ionosphere_test$V35)*100
+testing_accuracy
+testing_error=100-testing_accuracy
+testing_error
+##plotting
+barplot(c(training_accuracy,training_error,testing_accuracy,testing_error),
+ylim = c(0,100),main = "SVM (Linear Kernel) Method - cost = 0.01 ",
+ylab ="Percentages",col=c("Green","red"),
+names.arg =c("training Accuracy","Training Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+##SVM RADIAL FIT##
+library(tree)
+library(e1071)
+ion = read.csv("C://Users/gouth/Desktop/ionosphere.data", header = F,sep=',', na.strings='?')
+ions=na.omit(ion)
+fix(ions)
+attach(ions)
+dim(ions)
+str(ions)
+attributes(ions)
+str(ions)
+
+library(e1071)
+##SPLITTING DATASET INTO TRAINING AND TESTING (80% TRAINING AND 20% TESTING)
+RNGkind(sample.kind="Rounding")
+set.seed(123)
+train=sample(1:nrow(ions),280)
+ionosphere_train=ions[train,]
+ionosphere_test=ions[-train,]
+RNGkind(sample.kind="Rounding")
+set.seed(123)
+tune.radialout=tune(svm,V35~.,data=ionosphere_train,kernel="radial",gamma=0.5, ranges=list(cost=1,10,100,1000))
+summary(tune.radialout)
+bestmodel_radial=tune.radialout$best.model
+bestmodel_radial
+summary(bestmodel_radial)
+svm_radialfit=svm(V35~.,data=ionosphere_train,kernel="radial",cost=0.1,gamma=1.5)
+summary(svm_radialfit)
+##training data
+svm_trainpredict=predict(bestmodel_radial,ionosphere_train)
+table(svm_trainpredict,ionosphere_train$V35)
+training_accuracy=mean(svm_trainpredict==ionosphere_train$V35)*100
+training_accuracy
+training_error=100-training_accuracy
+training_error
+##testing data
+svm_testpredict=predict(bestmodel_radial,ionosphere_test)
+table(svm_testpredict,ionosphere_test$V35)
+testing_accuracy=mean(svm_testpredict==ionosphere_test$V35)*100
+testing_accuracy
+testing_error=100-testing_accuracy
+testing_error
+##plotting
+barplot(c(training_accuracy,training_error,testing_accuracy,testing_error),
+ylim = c(0,100),main = "SVM (Radial Kernel) Method - cost = 0.01 ",
+ylab ="Percentages",col=c("Green","red"),
+names.arg =c("training Accuracy","Training Error","Test Accuracy","Test Error Rate"),
+legend=c("Accuracy","Error Rate"),
+args.legend = list(title="Percentages",x="topright",cex=0.8))
+
+###SVM POLYNOMIAL KERNEL##
+##svm poly
+library(tree)
+library(e1071)
+ion = read.csv("C://Users/gouth/Desktop/ionosphere.data", header = F,sep=',', na.strings='?')
+ions=na.omit(ion)
+fix(ions)
+attach(ions)
+dim(ions)
+str(ions)
+attributes(ions)
+str(ions)
+##SPLITTING DATASET INTO TRAINING AND TESTING (80% TRAINING AND 20% TESTING)
+RNGkind(sample.kind="Rounding")
+set.seed(123)
+train=sample(1:nrow(ions),260)
+ionosphere_train=ions[train,]
+ionosphere_test=ions[-train,]
+##tuning polynomial
+RNGkind(sample.kind="Rounding")
+set.seed(123)
+tune.polyout=tune(svm,V35~.,data=ionosphere_train,kernel="polynomial", ranges=list(cost=0.4,10,100),gamma=c(0.5,1),degree=c(1,2,3,4))
+summary(tune.polyout)
+bestmodel_poly=tune.polyout$best.model
+summary(bestmodel_poly)
+svm_polyfit=svm(V35~.,data=ionosphere_train,kernel="polynomial",cost=1,gamma=0.5,degree=1)
+summary(svm_polyfit)
+##training data
+svm_trainpredict=predict(bestmodel_poly,ionosphere_train)
+table(svm_trainpredict,ionosphere_train$V35)
+training_accuracy=mean(svm_trainpredict==ionosphere_train$V35)*100
+training_accuracy
+training_error=100-training_accuracy
+training_error
+##testing data
+svm_testpredict=predict(bestmodel_poly,ionosphere_test)
+table(svm_testpredict,ionosphere_test$V35)
+testing_accuracy=mean(svm_testpredict==ionosphere_test$V35)*100
+testing_accuracy
+testing_error=100-testing_accuracy
+testing_error
+##plotting
+barplot(c(training_accuracy,training_error,testing_accuracy,testing_error),ylim = c(0,100),main = "SVM (polynomial Kernel) Method - cost = 0.01 ",
+        ylab ="Percentages",col=c("Green","red"),names.arg =c("training Accuracy","Training Error","Test Accuracy","Test Error Rate"),legend=c("Accuracy","Error Rate"),args.legend = list(title="Percentages",x="topright",cex=0.8))
+
